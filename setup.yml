@@ -1,0 +1,21 @@
+---
+- name: Install Docker Engine and Docker Compose
+  hosts: capstone
+  become: true
+  tasks:
+    - name: Install required packages
+      yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+	  - lvm2
+        state: present
+
+    - name: Configure the docker-ce repo
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Install docker-ce
+      yum:
+        name: docker-ce
+	state: present
+    - name: 

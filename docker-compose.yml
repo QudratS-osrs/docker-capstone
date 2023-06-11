@@ -1,0 +1,20 @@
+---
+- name: Install Docker Compose
+  hosts: capstone
+  become: true
+  tasks:
+    - name: Install Python pip
+      yum:
+        name: python2-pip
+        state: present
+
+    - name: Upgrade pip
+      pip:
+        name: pip
+        extra_args: --upgrade
+
+    - name: Install Docker Compose
+      pip:
+        name: docker-compose
+        executable: pip2
+        state: present

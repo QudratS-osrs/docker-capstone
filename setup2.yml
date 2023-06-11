@@ -1,0 +1,37 @@
+---
+- name: Install Docker Engine and Docker Compose
+  hosts: capstone
+  become: true
+  tasks:
+    - name: Install required packages
+      yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+          - epel-release
+          - python3-pip
+        state: present
+    - name: Enable Epel extra repo
+      yum:
+        name: epel-release
+        enablerepo: extras
+        state: present 
+
+    - name: Install Docker Compose
+      yum:
+        name: docker-compose
+        state: present
+
+    - name: Configure the docker-ce repo
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Install docker-ce
+      yum:
+        name: docker-ce
+        state: present
+    - name: Enable and Start Docker serivce
+      systemd:
+        name: docker.service
+        enabled: yes
+        state: started 

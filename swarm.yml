@@ -1,0 +1,38 @@
+- name: Deploy application in Docker Swarm
+  hosts: capstone
+  become: true
+  tasks:
+    - name: Install required packages
+      yum:
+        name:
+          - httpd
+          - php
+          - mysql
+          - php-mysql
+        state: present
+    
+    - name: Initialize Docker Swarm
+      command: docker swarm init
+     
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Download and extract application files
+      get_url:
+        url: https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/CUR-TF-200-ACACAD/studentdownload/lab-app.tgz
+        dest: /tmp/lab-app.tgz
+
+    - name: Extract application files
+      unarchive:
+        src: /tmp/lab-app.tgz
+        dest: /var/www/html
+        remote_src: yes
+
+    - name: Change ownership of rds.conf.php
+      file:
+        path: /var/www/html/rds.conf.php
+        owner: apache
+        group: root
